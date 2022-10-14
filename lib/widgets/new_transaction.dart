@@ -49,72 +49,80 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          // TRANSACTION TITLE INPUT
-          TextField(
-            decoration: const InputDecoration(
-              label: Text('Title:'),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 10.0,
+          left: 10.0,
+          right: 10.0,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            // TRANSACTION TITLE INPUT
+            TextField(
+              decoration: const InputDecoration(
+                label: Text('Title:'),
+              ),
+              controller: _titleController,
+              onSubmitted: (_) => _submitData(),
             ),
-            controller: _titleController,
-            onSubmitted: (_) => _submitData(),
-          ),
-          // TRANSACTION PRICE AMOUNT INPUT
-          TextField(
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              label: Text('Amount:'),
+            // TRANSACTION PRICE AMOUNT INPUT
+            TextField(
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(
+                label: Text('Amount:'),
+              ),
+              controller: _amountController,
+              onSubmitted: (_) => _submitData(),
             ),
-            controller: _amountController,
-            onSubmitted: (_) => _submitData(),
-          ),
-          Container(
-            height: 70.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(_selectedDate == null
-                    ? 'No Date Chosen!'
-                    : "Picked Date: ${DateFormat.yMMMd().format(_selectedDate!)}"),
-                TextButton(
-                  // style: TextButton.styleFrom(
-                  //   foregroundColor: Theme.of(context).primaryColor,
-                  // ),
-                  onPressed: _presentDatePicker,
-                  child: const Text(
-                    'Choose Date',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+            Container(
+              height: 70.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_selectedDate == null
+                      ? 'No Date Chosen!'
+                      : "Picked Date: ${DateFormat.yMMMd().format(_selectedDate!)}"),
+                  TextButton(
+                    // style: TextButton.styleFrom(
+                    //   foregroundColor: Theme.of(context).primaryColor,
+                    // ),
+                    onPressed: _presentDatePicker,
+                    child: const Text(
+                      'Choose Date',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: _submitData,
+                  child: const Text('Add Transaction'),
                 ),
               ],
-            ),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: Theme.of(context).primaryColor,
-                    width: 2,
-                  ),
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: _submitData,
-                child: const Text('Add Transaction'),
-              ),
-            ],
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
