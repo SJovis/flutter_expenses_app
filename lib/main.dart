@@ -7,9 +7,9 @@ import './models/transaction.dart';
 import 'widgets/chart.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const MyApp());
 }
 
@@ -74,6 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
+  bool _showChart = false;
+
   void _addNewTransactions(
       String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
@@ -106,6 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
 
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: const Text(
         'Personal Expenses',
@@ -117,27 +122,57 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
     );
+
+    final txList = SizedBox(
+      height: (deviceHeight -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+      child: TransactionList(
+          transactions: _userTransactions,
+          deleteTransaction: _deleteTransaction),
+    );
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           children: [
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Show chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
             // TRANSACTIONS CHART
-            SizedBox(
-                height: (deviceHeight -
-                        appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
-                    0.3,
-                child: Chart(recentTransactions: _recentTransactions)),
-            SizedBox(
-              height: (deviceHeight -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  0.7,
-              child: TransactionList(
-                  transactions: _userTransactions,
-                  deleteTransaction: _deleteTransaction),
-            ),
+            if (!isLandscape)
+              SizedBox(
+                  height: (deviceHeight -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.3,
+                  child: Chart(recentTransactions: _recentTransactions)),
+            if (!isLandscape) txList,
+            if (isLandscape)
+              _showChart
+                  ? SizedBox(
+                      height: (deviceHeight -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.7,
+                      child: Chart(recentTransactions: _recentTransactions))
+                  :
+                  // TRANSACTIONS LIST
+                  txList
           ],
         ),
       ),
