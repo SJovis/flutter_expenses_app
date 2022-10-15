@@ -59,11 +59,19 @@ class TransactionList extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  trailing: IconButton(
-                    onPressed: () => deleteTransaction(transactions[index].id),
-                    icon: const Icon(Icons.delete),
-                    color: Theme.of(context).primaryColorLight,
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 420
+                      ? TextButton.icon(
+                          onPressed: () =>
+                              deleteTransaction(transactions[index].id),
+                          icon: const Icon(Icons.delete),
+                          label: const Text('Delete'),
+                        )
+                      : IconButton(
+                          onPressed: () =>
+                              deleteTransaction(transactions[index].id),
+                          icon: const Icon(Icons.delete),
+                          color: Theme.of(context).primaryColorLight,
+                        ),
                 ),
               );
             },

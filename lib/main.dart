@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
 
 import './widgets/new_transaction.dart';
@@ -106,10 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceHeight = MediaQuery.of(context).size.height;
+    final mediaQuery = MediaQuery.of(context);
 
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final deviceHeight = mediaQuery.size.height;
+
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
 
     final appBar = AppBar(
       title: const Text(
@@ -126,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final txList = SizedBox(
       height: (deviceHeight -
               appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top) *
+              mediaQuery.padding.top) *
           0.7,
       child: TransactionList(
           transactions: _userTransactions,
@@ -143,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('Show chart'),
-                  Switch(
+                  Switch.adaptive(
                     value: _showChart,
                     onChanged: (value) {
                       setState(() {
@@ -158,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(
                   height: (deviceHeight -
                           appBar.preferredSize.height -
-                          MediaQuery.of(context).padding.top) *
+                          mediaQuery.padding.top) *
                       0.3,
                   child: Chart(recentTransactions: _recentTransactions)),
             if (!isLandscape) txList,
@@ -167,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ? SizedBox(
                       height: (deviceHeight -
                               appBar.preferredSize.height -
-                              MediaQuery.of(context).padding.top) *
+                              mediaQuery.padding.top) *
                           0.7,
                       child: Chart(recentTransactions: _recentTransactions))
                   :
@@ -177,10 +179,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _startAddNewTransaction(context),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: () => _startAddNewTransaction(context),
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }
